@@ -7,6 +7,7 @@
 
 #include <boost/assign/list_of.hpp>
 
+#include "../AoCUtils.cpp"
 
 struct SubmarineCommand
 {
@@ -20,7 +21,7 @@ struct SubmarineCommand
       if (pos == std::string::npos)
       {
          distance_ = -1;
-         std::cout << "ERROR: Could not parse line: " << line << std::endl;
+         aoc_utils::printParseError(line);
       }
       else
       {
@@ -34,9 +35,8 @@ struct SubmarineCommand
          catch (std::out_of_range e)
          {
             distance_ = -1;
-            std::cout << "ERROR: Could not parse direction: " << directionValue  << " in line "
-               << line << "." << std::endl;
-            std::cout << e.what() << std::endl;
+            aoc_utils::printParseError(line, 
+               "Could not parse direction " + directionValue + " " + e.what());
          }
       }
    }
@@ -107,37 +107,29 @@ void calculateDistances(bool useAim, int& horizontal, int& depth,
 int main()
 {
    std::vector<SubmarineCommand> commands;
+   int horizontal, depth;
 
    // sample file ------
    if (!readCommands("sample", &commands))
       return 1;
 
-   int horizontal, depth;
    calculateDistances(false, horizontal, depth, &commands);
-
-   int product = horizontal * depth;
-   if (product != 150)
-      std:: cout << "Part 1) Sample test FAILED: Expected 150 and caclulated " << product << std::endl; 
-   else
-      std::cout << "Part 1) Sample test PASSED" << std::endl;
+   aoc_utils::printTestResults(1, 150, horizontal * depth);
 
    calculateDistances(true, horizontal, depth, &commands);
-   product = horizontal * depth;
+   aoc_utils::printTestResults(2, 900, horizontal * depth);
 
-   if (product != 900)
-      std:: cout << "Part 2) Sample test FAILED: Expected 900 and caclulated " << product << std::endl; 
-   else
-      std::cout << "Part 2) Sample test PASSED" << std::endl;
+   std::cout << "---" << std::endl;
 
    // input file ----
    if (!readCommands("input", &commands))
       return 1;
 
    calculateDistances(false, horizontal, depth, &commands);
-   std::cout << "Part 1) Product of horizontal distance and depth: " << horizontal * depth << std::endl;
+   aoc_utils::printSoltuion(1, horizontal * depth);
 
    calculateDistances(true, horizontal, depth, &commands);
-   std::cout << "Part 2) Product of horizontal distance and depth: " << horizontal * depth << std::endl;
+   aoc_utils::printSoltuion(2, horizontal * depth);
 
    return 0;
 }
