@@ -33,6 +33,7 @@ bool readMatrix(int gammaRateLength, std::string fileName, Matrix* pMatrix)
       pMatrix->push_back(set);
    }
 
+   file.close();
    return 1;
 }
 
