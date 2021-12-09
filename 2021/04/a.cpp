@@ -247,14 +247,15 @@ void callNumbers(const std::vector<int>* pCalledNumbers,
    {
       for (int b = 0; b < (int) pBoards->size(); b++)
       {
-         pBoards->at(b).call(i);
-         if (pBoards->at(b).isWinner())
+         if (!pBoards->at(b).isWinner())
          {
-            pWinners->push_back(std::make_pair(&pBoards->at(b), i));
+            pBoards->at(b).call(i);
+            if (pBoards->at(b).isWinner())
+            {
+               pWinners->push_back(std::make_pair(&pBoards->at(b), i));
+            }
          }
       }
-      if (!pWinners->empty())
-         return;
    }
 }
 
@@ -269,14 +270,22 @@ int main()
    std::vector<std::pair<Board*,int>> winningBoards;
    callNumbers(&calledNumbers, &boards, &winningBoards);
 
-   aoc_utils::printTestResults(1, 4512,
-                               winningBoards.at(0).first->score(winningBoards.at(0).second));
+   std::pair<Board*, int> firstWinner = winningBoards.at(0);
+   std::pair<Board*, int> lastWinner = winningBoards.at(winningBoards.size() - 1);
+
+   aoc_utils::printTestResults(1, 4512, firstWinner.first->score(firstWinner.second));
+   aoc_utils::printTestResults(2, 1924, lastWinner.first->score(lastWinner.second));
 
    if (!readInput("input", &calledNumbers, &boards))
       return 1;
 
    callNumbers(&calledNumbers, &boards, &winningBoards);
-   aoc_utils::printSoltuion(1, winningBoards.at(0).first->score(winningBoards.at(0).second));
+
+   firstWinner = winningBoards.at(0);
+   lastWinner = winningBoards.at(winningBoards.size() - 1);
+
+   aoc_utils::printSoltuion(1, firstWinner.first->score(firstWinner.second));
+   aoc_utils::printSoltuion(1, lastWinner.first->score(lastWinner.second));
 
    return 0;
 }
