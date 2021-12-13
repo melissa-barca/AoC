@@ -1,3 +1,5 @@
+#include <_types/_uint64_t.h>
+#include <cstdint>
 #include <iostream>
 #include <string>
 
@@ -18,6 +20,16 @@ namespace aoc_utils
       printParseError(line, "");
    }
 
+   void printTestResults(int part, std::uint64_t expected, std::uint64_t calculated)
+   {
+      std::string text ("Part " + std::to_string(part) + ") Sample test ");
+      text.append(calculated == expected ?
+                  "PASSED" :
+                  "FAILED: Expected " + std::to_string(expected) +
+                     " and calculated " + std::to_string(calculated));
+      std::cout << text << std::endl;
+   }
+
    void printTestResults(int part, int expected, int calculated)
    {
       std::string text ("Part " + std::to_string(part) + ") Sample test ");
@@ -31,6 +43,11 @@ namespace aoc_utils
    void printTestResults(int part)
    {
       printTestResults(part, 0, 0);
+   }
+
+   void printSoltuion(int part, uint64_t solution)
+   {
+      std::cout << "Part " <<  part << ") Solution: " << solution << std::endl;
    }
 
    void printSoltuion(int part, int solution)
