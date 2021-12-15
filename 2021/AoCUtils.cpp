@@ -1,10 +1,33 @@
 #include <_types/_uint64_t.h>
 #include <cstdint>
+#include <fstream>
 #include <iostream>
 #include <string>
+#include <vector>
 
 namespace aoc_utils
 {
+   typedef std::vector<int> row_t;
+   typedef std::vector<row_t> vector_t;
+   bool readGridInput(std::string fileName, vector_t* pGrid)
+   {
+      pGrid->resize(0);
+
+      std::ifstream file;
+      file.open(fileName);
+
+      std::string line;
+      for (int i = 0; getline(file, line); i++)
+      {
+         std::vector<int> row;
+         for (size_t j = 0; j < line.size(); j++)
+            row.push_back(line.at(j) - 48);
+         pGrid->push_back(row);
+      }
+
+      return 1;
+   }
+
    void printError(std::string message)
    {
       std::cout << "ERROR: " << message << std::endl;
