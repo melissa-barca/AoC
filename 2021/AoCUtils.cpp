@@ -28,6 +28,11 @@ namespace aoc_utils
       return 1;
    }
 
+   void printWarning(std::string message)
+   {
+      std::cout << "WARNING: " << message << std::endl;
+   }
+
    void printError(std::string message)
    {
       std::cout << "ERROR: " << message << std::endl;
