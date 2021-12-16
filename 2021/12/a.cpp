@@ -104,21 +104,17 @@ struct Graph
       if (!allowOnePass)
          return total;
 
-      vector<shared_ptr<Cave>> smallCaves;
+      int originalTotal = total;
       for (auto it : nameLookup_)
       {
          if (it.first != kStart && it.first != kEnd && !nameLookup_.at(it.first)->big_)
-            smallCaves.push_back(it.second);
-      }
-
-      int originalTotal = total;
-      for (shared_ptr<Cave> cave : smallCaves)
-      {
-         int tmpTotal = 0;
-         cave->pretendBig_ = true;
-         getPaths(nameLookup_[kStart].get(), nameLookup_[kEnd].get(), visited, path, tmpTotal);
-         cave->pretendBig_ = false;
-         total += tmpTotal - originalTotal;
+         {
+            int tmpTotal = 0;
+            it.second->pretendBig_ = true;
+            getPaths(nameLookup_[kStart].get(), nameLookup_[kEnd].get(), visited, path, tmpTotal);
+            it.second->pretendBig_ = false;
+            total += tmpTotal - originalTotal;
+         }
       }
       return total;
    }
