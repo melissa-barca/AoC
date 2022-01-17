@@ -8,7 +8,7 @@ INIT_MAX = 50
 INIT_MIN = -50
 
 class Step(NamedTuple):
-    on: bool
+    on: int
     x1: int
     x2: int
     y1: int
@@ -32,15 +32,15 @@ def read_file(file) :
             z_range = list(map(int, z_range))
         
             steps.append(
-                Step(directive == "on", x_range[0], x_range[1], y_range[0], y_range[1], z_range[0], z_range[1]))
+                Step(1 if directive == "on" else -1, x_range[0], x_range[1], y_range[0], y_range[1], z_range[0], z_range[1]))
     return steps
 
-def process(steps, init):
+def process_init(steps):
     on_cuboids = set()
     for step in steps:
-        if not init or (init and all(INIT_MIN <= i  <= INIT_MAX for i in [step.x1, step.x2, step.y1, step.y2, step.z1, step.z2])):
+        if all(INIT_MIN <= i  <= INIT_MAX for i in [step.x1, step.x2, step.y1, step.y2, step.z1, step.z2]):
 
-            if step.on:
+            if step.on == 1:
                 for x in range(step.x1, step.x2 + 1):
                     for y in range(step.y1, step.y2 + 1):
                         for z in range(step.z1, step.z2 + 1):
@@ -55,15 +55,41 @@ def process(steps, init):
                                 pass
     return on_cuboids
 
+# Pt 2 inspired by Reddit: 
+# https://www.reddit.com/r/adventofcode/comments/rlxhmg/2021_day_22_solutions/hqxczc4/
+def intersection(cuboid1, cuboid2):
+    mm = [lambda a, b:-b, max, min, max, min, max, min]
+    n = [mm[i](cuboid1[i], cuboid2[i]) for i in range (7)]
+    return None if n[1] > n[2] or n[3] > n[4] or n[5] > n[6] else n
+
+def count_on(on_cuboids):
+    count = 0
+    for c in on_cuboids:
+        count += c[0] * (c[2] - c[1] + 1) * (c[4] - c[3] + 1) * (c[6] - c[5] + 1)
+    return count
+
+def process(steps):
+    on_cuboids = []
+    for step in steps:
+        to_add = [step] if step[0] == 1 else []
+        for cuboid in on_cuboids:
+            inter = intersection(step, cuboid)
+            if inter:
+                to_add += [inter]
+        on_cuboids += to_add
+    return on_cuboids
 
 steps = read_file('sample')
-on_cuboids = process(steps, True)
+on_cuboids = process_init(steps)
 print_test(1, 590784, len(on_cuboids))
 
+steps = read_file("sample2")
+on_cuboids = process(steps)
+print_test(2, 2758514936282235, count_on(on_cuboids))
+
 steps = read_file("input")
-on_cuboids = process(steps, True)
+on_cuboids = process_init(steps)
 print_solution(1, len(on_cuboids))
 
-#steps = read_file("sample2")
-#on_cuboids = process(steps, False)
-#print_test(2, 2758514936282235, len(on_cuboids))
+on_cuboids = process(steps)
+print_solution(2, count_on(on_cuboids))
